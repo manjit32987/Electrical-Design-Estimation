@@ -1,24 +1,11 @@
-# ⚡ Electrical Estimator (Web & Desktop App)
+##  Electrical Estimator
 
-[![Live Web App](https://img.shields.io/badge/🌐_Live_Web_App-designestimation.netlify.app-00C7B7?style=for-the-badge&logo=netlify)](https://designestimation.netlify.app/)
-[![License](https://img.shields.io/badge/License-MIT-blue.style=for-the-badge)](LICENSE)
+A desktop application for room-by-room electrical load planning and cost estimation, built with **Python 3.12+ and PyQt6**.
 
-An electrical load planning, fixture calculation, wire estimation, and schematic floor plan generator available as both a **zero-install Web App** and a **PyQt6 Desktop App**.
+Designed for electrical site estimators who need a fast, offline tool to generate connected-load summaries, fixture counts, wire estimates, and schematic floor plans — without CAD software. Though it's a very initial version of the app but I think it will help provide a quick overview of the project cost on the electrical side.
 
-> 🚀 **Try it Live in your browser instantly:** [https://designestimation.netlify.app/](https://designestimation.netlify.app/) *(No installation required!)*
-
----
-
-## 🌐 Option 1: Web App (Zero-Install — Recommended)
-
-No Python, PyQt6, or dependencies required! Works instantly in any modern web browser.
-
-- 🔗 **Live URL**: [https://designestimation.netlify.app/](https://designestimation.netlify.app/)
-- **Local Browser**: Simply open [`web/index.html`](file:///c:/Users/acer/Downloads/Electric%20Estimation/Electrical-Design-Estimation/web/index.html) in your browser.
-- **Local Web Server**:
-  ```bash
-  python web/server.py
-  ```
+> 🌐 **If you are not an engineer and don't wanna waste your time on path configuration, just click the link to use:**  
+> 👉 **[https://designestimation.netlify.app/](https://designestimation.netlify.app/)**
 
 ---
 
