@@ -1,48 +1,34 @@
-##  Electrical Estimator
+# ⚡ Electrical Estimator (Web & Desktop App)
 
-A desktop application for room-by-room electrical load planning and cost estimation, built with **Python 3.12+ and PyQt6**.
+[![Live Web App](https://img.shields.io/badge/🌐_Live_Web_App-designestimation.netlify.app-00C7B7?style=for-the-badge&logo=netlify)](https://designestimation.netlify.app/)
+[![License](https://img.shields.io/badge/License-MIT-blue.style=for-the-badge)](LICENSE)
 
-Designed for electrical site estimators who need a fast, offline tool to generate connected-load summaries, fixture counts, wire estimates, and schematic floor plans — without CAD software. Though it's a very initial version of the app but I think it will help provide a quick overview of the project cost on the electrical side.
+An electrical load planning, fixture calculation, wire estimation, and schematic floor plan generator available as both a **zero-install Web App** and a **PyQt6 Desktop App**.
 
----
-
-##  Screenshots
-
-
-![Main Window](docs/screenshots/main_window.png)
-
-![Floor Plan Layout](docs/screenshots/layout.png)
+> 🚀 **Try it Live in your browser instantly:** [https://designestimation.netlify.app/](https://designestimation.netlify.app/) *(No installation required!)*
 
 ---
 
-##  Features
+## 🌐 Option 1: Web App (Zero-Install — Recommended)
 
-- **Room-by-room input table** — name, dimensions, room type, AC flag
-- **Intelligent fixture calculation**
-  - Lights and fans computed from room area with a guaranteed minimum of 1 per room
-  - Sockets derived automatically from light count
-- **Standards panel** — adjust m²/light, m²/fan, wire wastage factor, diversity factor
-- **Results table** — area, lights, fans, sockets, AC points, connected load (W) per room
-- **Summary totals** — total load (W/kW), estimated wire length, estimated cost (₹)
-- **Schematic floor plan** — top-view matplotlib canvas with:
-  - Multi-row automatic wrapping
-  - Grid-distributed symbols (●light ⊕fan □socket ★AC)
-  - Export as PNG or SVG
-- **Save / Load projects** — JSON format, no database required
-- **Editable cost data** — prices stored in `data/material_costs.json`, no code changes needed
+No Python, PyQt6, or dependencies required! Works instantly in any modern web browser.
+
+- 🔗 **Live URL**: [https://designestimation.netlify.app/](https://designestimation.netlify.app/)
+- **Local Browser**: Simply open [`web/index.html`](file:///c:/Users/acer/Downloads/Electric%20Estimation/Electrical-Design-Estimation/web/index.html) in your browser.
+- **Local Web Server**:
+  ```bash
+  python web/server.py
+  ```
 
 ---
 
----
+## 🖥️ Option 2: Desktop App (PyQt6)
 
-## ⚙️ Installation
-
-### Prerequisites
-
+### Prerequisites:
 - Python 3.12 or 3.13
 - pip
 
-### Steps
+### Steps:
 
 ```bash
 # 1. Clone the repository
@@ -57,7 +43,7 @@ venv\Scripts\activate        # Windows
 # 3. Install dependencies
 pip install PyQt6 matplotlib numpy
 
-# 4. Run the application
+# 4. Run the desktop application
 python main.py
 ```
 

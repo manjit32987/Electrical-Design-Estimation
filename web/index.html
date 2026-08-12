@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electrical Design & Load Estimator | Web App</title>
+  <meta name="description" content="Room-by-room electrical load planning, fixture calculation, wire estimation, cost analysis, and schematic floor plan generator.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <h1>Electrical Design Estimator</h1>
+          <p class="subtitle">Room-by-Room Load Planning & Schematic Layout Generator</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="btn btn-icon" title="Toggle Light/Dark Theme">
+          <span class="icon">🌙</span>
+        </button>
+        <button id="costsBtn" class="btn btn-outline">
+          <span class="icon">⚙️</span> Costs & Rates
+        </button>
+        <button id="openProjectBtn" class="btn btn-outline">
+          <span class="icon">📂</span> Open Project
+        </button>
+        <input type="file" id="projectFileInput" accept=".json" style="display: none;">
+        <button id="saveProjectBtn" class="btn btn-outline">
+          <span class="icon">💾</span> Save Project
+        </button>
+        <button id="calculateBtn" class="btn btn-primary">
+          <span class="icon">⚡</span> Calculate
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Left Panel: Inputs & Standards -->
+      <aside class="sidebar-panel">
+        <!-- Project Info -->
+        <div class="card glass-card">
+          <div class="card-header">
+            <h3>📋 Project Details</h3>
+          </div>
+          <div class="card-body grid-form">
+            <div class="form-group">
+              <label for="projectName">Project Name</label>
+              <input type="text" id="projectName" value="" placeholder="e.g. Dream Home">
+            </div>
+            <div class="form-group">
+              <label for="clientName">Client Name</label>
+              <input type="text" id="clientName" value="" placeholder="e.g. John Doe">
+            </div>
+            <div class="form-group">
+              <label for="buildingType">Building Type</label>
+              <select id="buildingType">
+                <option value="Residential" selected>Residential</option>
+                <option value="Commercial">Commercial</option>
+                <option value="Industrial">Industrial</option>
+                <option value="Office">Office</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Design Standards -->
+        <div class="card glass-card">
+          <div class="card-header">
+            <h3>📐 Design Standards</h3>
+          </div>
+          <div class="card-body grid-form">
+            <div class="form-group">
+              <label for="areaPerLight">Area per Light (m²)</label>
+              <input type="number" id="areaPerLight" value="10.0" step="0.5" min="1">
+            </div>
+            <div class="form-group">
+              <label for="areaPerFan">Area per Fan (m²)</label>
+              <input type="number" id="areaPerFan" value="15.0" step="0.5" min="1">
+            </div>
+            <div class="form-group">
+              <label for="wireWastage">Wire Wastage Factor</label>
+              <input type="number" id="wireWastage" value="1.3" step="0.05" min="1.0">
+            </div>
+            <div class="form-group">
+              <label for="diversityFactor">Diversity Factor</label>
+              <input type="number" id="diversityFactor" value="0.8" step="0.05" min="0.1" max="1.0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Room Input Table Card -->
+        <div class="card glass-card">
+          <div class="card-header flex-between">
+            <h3>🏠 Room Inventory</h3>
+            <button id="addRoomBtn" class="btn btn-sm btn-accent">
+              <span class="icon">+</span> Add Room
+            </button>
+          </div>
+          <div class="card-body table-wrapper">
+            <table class="data-table" id="roomsTable">
+              <thead>
+                <tr>
+                  <th>Room Name</th>
+                  <th>L (m)</th>
+                  <th>W (m)</th>
+                  <th>Type</th>
+                  <th>AC</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="roomsTableBody">
+                <!-- Dynamically Populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Panel: Summary, Results & Canvas -->
+      <section class="display-panel">
+        <!-- Summary Cards Row -->
+        <div class="summary-cards-grid">
+          <div class="summary-card metric-load">
+            <div class="metric-icon">🔌</div>
+            <div class="metric-data">
+              <span class="metric-label">Total Connected Load</span>
+              <span class="metric-value" id="summaryTotalLoad">0 W</span>
+              <span class="metric-sub" id="summaryDiversifiedLoad">Diversified: 0 kW</span>
+            </div>
+          </div>
+
+          <div class="summary-card metric-fixtures">
+            <div class="metric-icon">💡</div>
+            <div class="metric-data">
+              <span class="metric-label">Total Fixtures</span>
+              <span class="metric-value" id="summaryTotalFixtures">0</span>
+              <span class="metric-sub" id="summaryFixturesBreakdown">0 Lights | 0 Fans | 0 Sockets</span>
+            </div>
+          </div>
+
+          <div class="summary-card metric-wire">
+            <div class="metric-icon">🌀</div>
+            <div class="metric-data">
+              <span class="metric-label">Est. Wire Run</span>
+              <span class="metric-value" id="summaryWireLength">0 m</span>
+              <span class="metric-sub">Incl. vertical drops & wastage</span>
+            </div>
+          </div>
+
+          <div class="summary-card metric-cost">
+            <div class="metric-icon">💰</div>
+            <div class="metric-data">
+              <span class="metric-label">Estimated Cost</span>
+              <span class="metric-value" id="summaryTotalCost">₹0</span>
+              <span class="metric-sub">Incl. Materials, Conduit & Labour</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculated Results Table -->
+        <div class="card glass-card">
+          <div class="card-header flex-between">
+            <h3>📊 Electrical Calculation Breakdown</h3>
+            <span class="badge" id="roomCountBadge">0 Rooms</span>
+          </div>
+          <div class="card-body table-wrapper">
+            <table class="data-table" id="resultsTable">
+              <thead>
+                <tr>
+                  <th>Room Name</th>
+                  <th>Dimensions (m)</th>
+                  <th>Area (m²)</th>
+                  <th>Lights (●)</th>
+                  <th>Fans (⊕)</th>
+                  <th>Sockets (□)</th>
+                  <th>AC Point (★)</th>
+                  <th>Connected Load</th>
+                </tr>
+              </thead>
+              <tbody id="resultsTableBody">
+                <tr>
+                  <td colspan="8" class="text-center muted-text">Click "⚡ Calculate" to view room load estimates.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Floor Plan Visualizer Card -->
+        <div class="card glass-card floorplan-card">
+          <div class="card-header flex-between">
+            <div>
+              <h3>🗺 Schematic Top-View Layout</h3>
+              <p class="card-sub">Topological arrangement & distribution of fixture symbols</p>
+            </div>
+            <div class="canvas-actions">
+              <button id="generateLayoutBtn" class="btn btn-sm btn-primary">
+                <span class="icon">🔄</span> Render Layout
+              </button>
+              <button id="exportPngBtn" class="btn btn-sm btn-outline" disabled>
+                <span class="icon">🖼</span> Export PNG
+              </button>
+              <button id="exportSvgBtn" class="btn btn-sm btn-outline" disabled>
+                <span class="icon">📐</span> Export SVG
+              </button>
+            </div>
+          </div>
+          
+          <div class="card-body canvas-container">
+            <div class="legend-bar">
+              <div class="legend-item"><span class="legend-symbol light">●</span> Light (12W)</div>
+              <div class="legend-item"><span class="legend-symbol fan">⊕</span> Fan (75W)</div>
+              <div class="legend-item"><span class="legend-symbol socket">□</span> Socket (100W)</div>
+              <div class="legend-item"><span class="legend-symbol ac">★</span> AC Point (1500W)</div>
+            </div>
+            
+            <div class="canvas-viewport">
+              <canvas id="floorPlanCanvas" width="1000" height="600"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Editable Unit Costs Modal -->
+  <div class="modal-backdrop" id="costsModal">
+    <div class="modal-content glass-card">
+      <div class="modal-header">
+        <h3>⚙️ Material & Unit Cost Rates</h3>
+        <button class="modal-close" id="closeCostsModal">&times;</button>
+      </div>
+      <div class="modal-body grid-form">
+        <div class="form-group">
+          <label for="costLight">Light Fitting (₹ / unit)</label>
+          <input type="number" id="costLight" value="350" step="10">
+        </div>
+        <div class="form-group">
+          <label for="costFan">Ceiling Fan (₹ / unit)</label>
+          <input type="number" id="costFan" value="1500" step="50">
+        </div>
+        <div class="form-group">
+          <label for="costSocket">Socket Outlet (₹ / unit)</label>
+          <input type="number" id="costSocket" value="200" step="10">
+        </div>
+        <div class="form-group">
+          <label for="costAc">AC Point (₹ / unit)</label>
+          <input type="number" id="costAc" value="800" step="50">
+        </div>
+        <div class="form-group">
+          <label for="costWire">Wire (₹ / metre)</label>
+          <input type="number" id="costWire" value="25" step="1">
+        </div>
+        <div class="form-group">
+          <label for="costConduitFactor">Conduit & Accessories Factor</label>
+          <input type="number" id="costConduitFactor" value="0.15" step="0.01" hint="15% = 0.15">
+        </div>
+        <div class="form-group">
+          <label for="costLabourFactor">Labour Factor</label>
+          <input type="number" id="costLabourFactor" value="0.20" step="0.01" hint="20% = 0.20">
+        </div>
+      </div>
+      <div class="modal-footer flex-end">
+        <button class="btn btn-outline" id="resetCostsBtn">Reset Defaults</button>
+        <button class="btn btn-primary" id="saveCostsBtn">Save Rates</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
