@@ -9,13 +9,43 @@ Designed for electrical site estimators who need a fast, offline tool to generat
 
 ---
 
-## 🖥️ Option 2: Desktop App (PyQt6)
+##  Screenshots
 
-### Prerequisites:
+
+![Main Window](docs/screenshots/main_window.png)
+
+![Floor Plan Layout](docs/screenshots/layout.png)
+
+---
+
+##  Features
+
+- **Room-by-room input table** — name, dimensions, room type, AC flag
+- **Intelligent fixture calculation**
+  - Lights and fans computed from room area with a guaranteed minimum of 1 per room
+  - Sockets derived automatically from light count
+- **Standards panel** — adjust m²/light, m²/fan, wire wastage factor, diversity factor
+- **Results table** — area, lights, fans, sockets, AC points, connected load (W) per room
+- **Summary totals** — total load (W/kW), estimated wire length, estimated cost (₹)
+- **Schematic floor plan** — top-view matplotlib canvas with:
+  - Multi-row automatic wrapping
+  - Grid-distributed symbols (●light ⊕fan □socket ★AC)
+  - Export as PNG or SVG
+- **Save / Load projects** — JSON format, no database required
+- **Editable cost data** — prices stored in `data/material_costs.json`, no code changes needed
+
+---
+
+---
+
+## ⚙️ Installation
+
+### Prerequisites
+
 - Python 3.12 or 3.13
 - pip
 
-### Steps:
+### Steps
 
 ```bash
 # 1. Clone the repository
@@ -30,7 +60,7 @@ venv\Scripts\activate        # Windows
 # 3. Install dependencies
 pip install PyQt6 matplotlib numpy
 
-# 4. Run the desktop application
+# 4. Run the application
 python main.py
 ```
 
@@ -91,4 +121,3 @@ At last thanks for using this repo
 Pull requests are welcome.
 
 ---
-
